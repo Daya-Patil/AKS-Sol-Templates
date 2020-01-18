@@ -1,0 +1,413 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "EVTHUBname": {
+      "type": "string"
+    },
+    "EVTHUBskuName": {
+      "type": "string"
+    },
+    "EVTHUBskuTier": {
+      "type": "string"
+    },
+    "EVTHUBskuCapacity": {
+      "type": "string"
+    },
+    "EVTHUBisAutoInflateEnabled": {
+      "type": "string"
+    },
+    "EVTHUBmaximumThroughputUnits": {
+      "type": "string"
+    },
+    "EVTHUBzoneRedundant": {
+      "type": "bool"
+    },
+    "NSGname": {
+      "type": "string"
+    },
+    "virtualNetworkName": {
+      "type": "string"
+    },
+    "vnetAddressPrefix": {
+      "type": "array"
+    },
+    "ipv6Enabled": {
+      "type": "bool"
+    },
+    "subnetCount": {
+      "type": "int"
+    },
+    "subnet1_name": {
+      "type": "string"
+    },
+    "subnet1_addressRange": {
+      "type": "string"
+    },
+    "ddosProtectionPlanEnabled": {
+      "type": "bool"
+    },
+    "firewallEnabled": {
+      "type": "bool"
+    },
+    "bastionEnabled": {
+      "type": "bool"
+    },
+    "Log_ANLT_workspace_Name": {
+      "type": "string"
+    },
+    "Log_ANLT_workspace_Location": {
+      "type": "string",
+      "allowedValues": [
+        "australiacentral",
+        "australiaeast",
+        "australiasoutheast",
+        "brazilsouth",
+        "canadacentral",
+        "centralindia",
+        "centralus",
+        "eastasia",
+        "eastus",
+        "eastus2",
+        "francecentral",
+        "japaneast",
+        "koreacentral",
+        "northcentralus",
+        "northeurope",
+        "southafricanorth",
+        "southcentralus",
+        "southeastasia",
+        "uksouth",
+        "ukwest",
+        "westcentralus",
+        "westeurope",
+        "westus",
+        "westus2"
+      ]
+    },
+    "Log_ANLT_Pricing_tier": {
+      "type": "string",
+      "allowedValues": [
+        "pergb2018",
+        "Free",
+        "Standalone",
+        "PerNode",
+        "Standard",
+        "Premium"
+      ],
+      "defaultValue": "Free",
+      "metadata": {
+        "description": "Pricing tier: PerGB2018 or legacy tiers (Free, Standalone, PerNode, Standard or Premium) which are not available to all customers."
+      }
+    },
+    "AKSClusterName": {
+      "type": "string"
+    },
+    "kubernetesVersion": {
+      "defaultValue": "1.15.7",
+      "type": "string",
+      "metadata": {
+        "description": "The version of Kubernetes."
+      }
+    },
+    "servicePrincipalClientId": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The Service Principal Client ID."
+      }
+    },
+    "servicePrincipalClientSecret": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The Service Principal Client Secret."
+      }
+    },
+    "AKSagentCount": {
+      "defaultValue": 1,
+      "minValue": 1,
+      "maxValue": 50,
+      "type": "int",
+      "metadata": {
+        "description": "The number of agent nodes for the cluster."
+      }
+    },
+    "AKSagentVMSize": {
+      "defaultValue": "Standard_D1_v2",
+      "type": "string",
+      "metadata": {
+        "description": "The size of the Virtual Machine."
+      }
+    },
+    "AKSosDiskSizeGB": {
+      "defaultValue": 100,
+      "minValue": 0,
+      "maxValue": 1023,
+      "type": "int",
+      "metadata": {
+        "description": "Disk size (in GB) to provision for each of the agent pool nodes. This value ranges from 0 to 1023. Specifying 0 will apply the default disk size for that agentVMSize."
+      }
+    },
+    "AKSosType": {
+      "defaultValue": "Linux",
+      "allowedValues": [
+        "Linux"
+      ],
+      "type": "string",
+      "metadata": {
+        "description": "The type of operating system."
+      }
+    },
+    "maxPods": {
+      "defaultValue": 30,
+      "type": "int",
+      "metadata": {
+        "description": "Maximum number of pods that can run on a node."
+      }
+    },
+    "enableOmsAgent": {
+      "defaultValue": true,
+      "type": "bool",
+      "metadata": {
+        "description": "boolean flag to turn on and off of omsagent addon"
+      }
+    },
+    "enableHttpApplicationRouting": {
+      "defaultValue": true,
+      "type": "bool",
+      "metadata": {
+        "description": "boolean flag to turn on and off of http application routing"
+      }
+    },
+    "enableRBAC": {
+      "defaultValue": true,
+      "type": "bool",
+      "metadata": {
+        "description": "Flag to turn on/off RBAC"
+      }
+    },
+    "networkPlugin": {
+      "defaultValue": "azure",
+      "allowedValues": [
+        "azure",
+        "kubenet"
+      ],
+      "type": "string",
+      "metadata": {
+        "description": "Network plugin used for building Kubernetes network."
+      }
+    },
+    "serviceCidr": {
+      "type": "string",
+      "metadata": {
+        "description": "A CIDR notation IP range from which to assign service cluster IPs."
+      }
+    },
+    "dnsServiceIP": {
+      "type": "string",
+      "metadata": {
+        "description": "Containers DNS server IP address."
+      }
+    },
+    "dockerBridgeCidr": {
+      "type": "string",
+      "metadata": {
+        "description": "A CIDR notation IP for Docker bridge."
+      }
+    },
+    "AKSnodeResourceGroupPrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "Prefex for nodeResourceGroup of AKS cluster."
+      }
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.EventHub/namespaces",
+      "apiVersion": "2018-01-01-preview",
+      "name": "[parameters('EVTHUBname')]",
+      "location": "[resourceGroup().location]",
+      "sku": {
+        "name": "[parameters('EVTHUBskuTier')]",
+        "tier": "[parameters('EVTHUBskuTier')]",
+        "capacity": "[parameters('EVTHUBskuCapacity')]"
+      },
+      "properties": {
+        "isAutoInflateEnabled": "[parameters('EVTHUBisAutoInflateEnabled')]",
+        "maximumThroughputUnits": "[parameters('EVTHUBmaximumThroughputUnits')]",
+        "zoneRedundant": "[parameters('EVTHUBzoneRedundant')]"
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2019-09-01",
+      "name": "[parameters('NSGname')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": []
+      }
+    },
+    {
+      "type": "Microsoft.EventHub/namespaces/AuthorizationRules",
+      "apiVersion": "2017-04-01",
+      "name": "[concat(parameters('EVTHUBname'), '/RootManageSharedAccessKey')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.EventHub/namespaces', parameters('EVTHUBname'))]"
+      ],
+      "properties": {
+        "rights": [
+          "Listen",
+          "Manage",
+          "Send"
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.EventHub/namespaces/networkRuleSets",
+      "apiVersion": "2018-01-01-preview",
+      "name": "[concat(parameters('EVTHUBname'), '/default')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.EventHub/namespaces', parameters('EVTHUBname'))]"
+      ],
+      "properties": {
+        "defaultAction": "Deny",
+        "virtualNetworkRules": [],
+        "ipRules": []
+      }
+    },
+    {
+      "name": "[parameters('virtualNetworkName')]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2019-04-01",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('NSGname'))]"
+      ],
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": "[parameters('vnetAddressPrefix')]"
+        },
+        "virtualNetworkPeerings": [],
+        "enableDdosProtection": "[parameters('ddosProtectionPlanEnabled')]",
+        "enableVmProtection": false
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks/subnets",
+      "apiVersion": "2019-09-01",
+      "name": "[concat(parameters('virtualNetworkName'), '/', parameters('subnet1_name'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('NSGname'))]"
+      ],
+      "properties": {
+        "addressPrefix": "[parameters('subnet1_addressRange')]",
+        "networkSecurityGroup": {
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('NSGname'))]"
+        },
+        "delegations": [],
+        "privateEndpointNetworkPolicies": "Enabled",
+        "privateLinkServiceNetworkPolicies": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "name": "[parameters('Log_ANLT_workspace_Name')]",
+      "apiVersion": "2017-03-15-preview",
+      "location": "[parameters('Log_ANLT_workspace_Location')]",
+      "properties": {
+        "sku": {
+          "name": "CapacityReservation",
+          "capacityReservationLevel": 100
+        },
+        "retentionInDays": 120,
+        "features": {
+          "searchVersion": 1,
+          "legacy": 0,
+          "enableLogAccessUsingOnlyResourcePermissions": true
+        }
+      }
+    },
+    {
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2019-10-01",
+      "name": "[parameters('AKSClusterName')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('Log_ANLT_workspace_Name'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnet1_name'))]"
+      ],
+      "properties": {
+        "kubernetesVersion": "[parameters('kubernetesVersion')]",
+        "dnsPrefix": "[concat(parameters('AKSClusterName'), '-dns')]",
+        "agentPoolProfiles": [
+          {
+            "name": "agentpool",
+            "count": "[parameters('AKSagentCount')]",
+            "vmSize": "[parameters('AKSagentVMSize')]",
+            "osDiskSizeGB": "[parameters('AKSosDiskSizeGB')]",
+            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnet1_name'))]",
+            "maxPods": "[parameters('maxPods')]",
+            "type": "VirtualMachineScaleSets",
+            "orchestratorVersion": "[parameters('kubernetesVersion')]",
+            "osType": "[parameters('AKSosType')]"
+          }
+        ],
+        "servicePrincipalProfile": {
+          "clientId": "[parameters('servicePrincipalClientId')]",
+          "secret": "[parameters('servicePrincipalClientSecret')]"
+        },
+        "addonProfiles": {
+          "httpApplicationRouting": {
+            "enabled": "[parameters('enableHttpApplicationRouting')]"
+          },
+          "omsagent": {
+            "enabled": "[parameters('enableOmsAgent')]",
+            "config": {
+              "logAnalyticsWorkspaceResourceID": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('Log_ANLT_workspace_Name'))]"
+            }
+          }
+        },
+        "nodeResourceGroup": "[concat(parameters('AKSnodeResourceGroupPrefix'), parameters('AKSClusterName'), '_', resourceGroup().location )]",
+        "enableRBAC": "[parameters('enableRBAC')]",
+        "networkProfile": {
+          "networkPlugin": "[parameters('networkPlugin')]",
+          "loadBalancerSku": "standard",
+          "loadBalancerProfile": {
+            "managedOutboundIPs": {
+              "count": 1
+            }
+
+          },
+          "serviceCidr": "[parameters('serviceCidr')]",
+          "dnsServiceIP": "[parameters('dnsServiceIP')]",
+          "dockerBridgeCidr": "[parameters('dockerBridgeCidr')]",
+          "outboundType": "loadBalancer"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.ContainerService/managedClusters/agentPools",
+      "apiVersion": "2019-10-01",
+      "name": "[concat(parameters('AKSClusterName'), '/agentpool')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ContainerService/managedClusters', parameters('AKSClusterName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnet1_name'))]"
+      ],
+      "properties": {
+        "count": "[parameters('AKSagentCount')]",
+        "vmSize": "[parameters('AKSagentVMSize')]",
+        "osDiskSizeGB": "[parameters('AKSosDiskSizeGB')]",
+        "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnet1_name'))]",
+        "maxPods": "[parameters('maxPods')]",
+        "type": "VirtualMachineScaleSets",
+        "orchestratorVersion": "[parameters('kubernetesVersion')]",
+        "osType": "[parameters('AKSosType')]"
+      }
+    }
+  ]
+  
+}
