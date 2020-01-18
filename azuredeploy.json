@@ -2,34 +2,31 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "EVTHUBname": {
+    "EventHubName": {
       "type": "string"
     },
-    "EVTHUBskuName": {
+    "EventHubSku": {
       "type": "string"
     },
-    "EVTHUBskuTier": {
+    "EventHubSkuCapacity": {
       "type": "string"
     },
-    "EVTHUBskuCapacity": {
+    "EventHubIsautoInflateEnabled": {
       "type": "string"
     },
-    "EVTHUBisAutoInflateEnabled": {
+    "EventHubMaximumThroughputUnits": {
       "type": "string"
     },
-    "EVTHUBmaximumThroughputUnits": {
-      "type": "string"
-    },
-    "EVTHUBzoneRedundant": {
+    "EventHubZoneRedundant": {
       "type": "bool"
     },
-    "NSGname": {
+    "NSGName": {
       "type": "string"
     },
-    "virtualNetworkName": {
+    "VirtualNetworkName": {
       "type": "string"
     },
-    "vnetAddressPrefix": {
+    "VnetAddressPrefix": {
       "type": "array"
     },
     "ipv6Enabled": {
@@ -226,23 +223,23 @@
     {
       "type": "Microsoft.EventHub/namespaces",
       "apiVersion": "2018-01-01-preview",
-      "name": "[parameters('EVTHUBname')]",
+      "name": "[parameters('EventHubName')]",
       "location": "[resourceGroup().location]",
       "sku": {
-        "name": "[parameters('EVTHUBskuTier')]",
-        "tier": "[parameters('EVTHUBskuTier')]",
-        "capacity": "[parameters('EVTHUBskuCapacity')]"
+        "name": "[parameters('EventHubSku')]",
+        "tier": "[parameters('EventHubSku')]",
+        "capacity": "[parameters('EventHubSkuCapacity')]"
       },
       "properties": {
-        "isAutoInflateEnabled": "[parameters('EVTHUBisAutoInflateEnabled')]",
-        "maximumThroughputUnits": "[parameters('EVTHUBmaximumThroughputUnits')]",
-        "zoneRedundant": "[parameters('EVTHUBzoneRedundant')]"
+        "isAutoInflateEnabled": "[parameters('EventHubIsautoInflateEnabled')]",
+        "maximumThroughputUnits": "[parameters('EventHubMaximumThroughputUnits')]",
+        "zoneRedundant": "[parameters('EventHubZoneRedundant')]"
       }
     },
     {
       "type": "Microsoft.Network/networkSecurityGroups",
       "apiVersion": "2019-09-01",
-      "name": "[parameters('NSGname')]",
+      "name": "[parameters('NSGName')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": []
@@ -251,10 +248,10 @@
     {
       "type": "Microsoft.EventHub/namespaces/AuthorizationRules",
       "apiVersion": "2017-04-01",
-      "name": "[concat(parameters('EVTHUBname'), '/RootManageSharedAccessKey')]",
+      "name": "[concat(parameters('EventHubName'), '/RootManageSharedAccessKey')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.EventHub/namespaces', parameters('EVTHUBname'))]"
+        "[resourceId('Microsoft.EventHub/namespaces', parameters('EventHubName'))]"
       ],
       "properties": {
         "rights": [
@@ -267,10 +264,10 @@
     {
       "type": "Microsoft.EventHub/namespaces/networkRuleSets",
       "apiVersion": "2018-01-01-preview",
-      "name": "[concat(parameters('EVTHUBname'), '/default')]",
+      "name": "[concat(parameters('EventHubName'), '/default')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.EventHub/namespaces', parameters('EVTHUBname'))]"
+        "[resourceId('Microsoft.EventHub/namespaces', parameters('EventHubName'))]"
       ],
       "properties": {
         "defaultAction": "Deny",
@@ -279,12 +276,12 @@
       }
     },
     {
-      "name": "[parameters('virtualNetworkName')]",
+      "name": "[parameters('VirtualNetworkName')]",
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2019-04-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('NSGname'))]"
+        "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('NSGName'))]"
       ],
       "properties": {
         "addressSpace": {
@@ -298,15 +295,15 @@
     {
       "type": "Microsoft.Network/virtualNetworks/subnets",
       "apiVersion": "2019-09-01",
-      "name": "[concat(parameters('virtualNetworkName'), '/', parameters('subnet1_name'))]",
+      "name": "[concat(parameters('VirtualNetworkName'), '/', parameters('subnet1_name'))]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
-        "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('NSGname'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks', parameters('VirtualNetworkName'))]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('NSGName'))]"
       ],
       "properties": {
         "addressPrefix": "[parameters('subnet1_addressRange')]",
         "networkSecurityGroup": {
-          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('NSGname'))]"
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('NSGName'))]"
         },
         "delegations": [],
         "privateEndpointNetworkPolicies": "Enabled",
@@ -338,7 +335,7 @@
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('Log_ANLT_workspace_Name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnet1_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VirtualNetworkName'), parameters('subnet1_name'))]"
       ],
       "properties": {
         "kubernetesVersion": "[parameters('kubernetesVersion')]",
@@ -349,7 +346,7 @@
             "count": "[parameters('AKSagentCount')]",
             "vmSize": "[parameters('AKSagentVMSize')]",
             "osDiskSizeGB": "[parameters('AKSosDiskSizeGB')]",
-            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnet1_name'))]",
+            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VirtualNetworkName'), parameters('subnet1_name'))]",
             "maxPods": "[parameters('maxPods')]",
             "type": "VirtualMachineScaleSets",
             "orchestratorVersion": "[parameters('kubernetesVersion')]",
@@ -395,13 +392,13 @@
       "name": "[concat(parameters('AKSClusterName'), '/agentpool')]",
       "dependsOn": [
         "[resourceId('Microsoft.ContainerService/managedClusters', parameters('AKSClusterName'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnet1_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VirtualNetworkName'), parameters('subnet1_name'))]"
       ],
       "properties": {
         "count": "[parameters('AKSagentCount')]",
         "vmSize": "[parameters('AKSagentVMSize')]",
         "osDiskSizeGB": "[parameters('AKSosDiskSizeGB')]",
-        "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnet1_name'))]",
+        "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VirtualNetworkName'), parameters('subnet1_name'))]",
         "maxPods": "[parameters('maxPods')]",
         "type": "VirtualMachineScaleSets",
         "orchestratorVersion": "[parameters('kubernetesVersion')]",
