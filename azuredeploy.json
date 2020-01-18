@@ -6,55 +6,72 @@
       "type": "string"
     },
     "EventHubSku": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "Standard"
     },
     "EventHubSkuCapacity": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "1"
     },
     "EventHubIsautoInflateEnabled": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "false"
     },
     "EventHubMaximumThroughputUnits": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "0"
     },
     "EventHubZoneRedundant": {
-      "type": "bool"
+      "type": "bool",
+      "defaultValue": false
     },
     "NSGName": {
       "type": "string"
     },
     "VirtualNetworkName": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "TBSENTVnet"
     },
     "VnetAddressPrefix": {
-      "type": "array"
+      "type": "array",
+      "defaultValue": [
+        "192.168.16.0/23"
+      ]
     },
     "ipv6Enabled": {
-      "type": "bool"
+      "type": "bool",
+      "defaultValue": false
     },
     "subnetCount": {
-      "type": "int"
+      "type": "int",
+      "defaultValue": 1
     },
     "subnet1_name": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "TBSSubnet"
     },
     "subnet1_addressRange": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "192.168.16.0/23"
     },
     "ddosProtectionPlanEnabled": {
-      "type": "bool"
+      "type": "bool",
+      "defaultValue": false
     },
-    "firewallEnabled": {
-      "type": "bool"
+    "FirewallEnabled": {
+      "type": "bool",
+      "defaultValue": false
     },
     "bastionEnabled": {
-      "type": "bool"
+      "type": "bool",
+      "defaultValue": false
     },
-    "Log_ANLT_workspace_Name": {
+    "Log_Analytics_workspace_Name": {
       "type": "string"
     },
-    "Log_ANLT_workspace_Location": {
+    "Log_Analytics_workspace_location": {
       "type": "string",
+      "defaultValue": "southeastasia",
       "allowedValues": [
         "australiacentral",
         "australiaeast",
@@ -82,7 +99,7 @@
         "westus2"
       ]
     },
-    "Log_ANLT_Pricing_tier": {
+    "Log_Analytics_Pricing_tier": {
       "type": "string",
       "allowedValues": [
         "pergb2018",
@@ -97,7 +114,7 @@
         "description": "Pricing tier: PerGB2018 or legacy tiers (Free, Standalone, PerNode, Standard or Premium) which are not available to all customers."
       }
     },
-    "AKSClusterName": {
+    "AksClusterName": {
       "type": "string"
     },
     "kubernetesVersion": {
@@ -119,7 +136,7 @@
         "description": "The Service Principal Client Secret."
       }
     },
-    "AKSagentCount": {
+    "AksAgentCount": {
       "defaultValue": 1,
       "minValue": 1,
       "maxValue": 50,
@@ -128,14 +145,14 @@
         "description": "The number of agent nodes for the cluster."
       }
     },
-    "AKSagentVMSize": {
+    "AksAgentVMSize": {
       "defaultValue": "Standard_D1_v2",
       "type": "string",
       "metadata": {
         "description": "The size of the Virtual Machine."
       }
     },
-    "AKSosDiskSizeGB": {
+    "AksOsDiskSizeGB": {
       "defaultValue": 100,
       "minValue": 0,
       "maxValue": 1023,
@@ -144,7 +161,7 @@
         "description": "Disk size (in GB) to provision for each of the agent pool nodes. This value ranges from 0 to 1023. Specifying 0 will apply the default disk size for that agentVMSize."
       }
     },
-    "AKSosType": {
+    "AksOsType": {
       "defaultValue": "Linux",
       "allowedValues": [
         "Linux"
@@ -195,24 +212,28 @@
     },
     "serviceCidr": {
       "type": "string",
+      "defaultValue": "10.0.0.0/16",
       "metadata": {
         "description": "A CIDR notation IP range from which to assign service cluster IPs."
       }
     },
     "dnsServiceIP": {
       "type": "string",
+      "defaultValue": "10.0.0.10",
       "metadata": {
         "description": "Containers DNS server IP address."
       }
     },
     "dockerBridgeCidr": {
       "type": "string",
+      "defaultValue": "172.17.0.1/16",
       "metadata": {
         "description": "A CIDR notation IP for Docker bridge."
       }
     },
-    "AKSnodeResourceGroupPrefix": {
+    "AksNodeResourceGroupPrefix": {
       "type": "string",
+      "defaultValue": "MC_TBS-RG-SI-Entrp_",
       "metadata": {
         "description": "Prefex for nodeResourceGroup of AKS cluster."
       }
@@ -312,9 +333,9 @@
     },
     {
       "type": "Microsoft.OperationalInsights/workspaces",
-      "name": "[parameters('Log_ANLT_workspace_Name')]",
+      "name": "[parameters('Log_Analytics_workspace_Name')]",
       "apiVersion": "2017-03-15-preview",
-      "location": "[parameters('Log_ANLT_workspace_Location')]",
+      "location": "[parameters('Log_Analytics_workspace_location')]",
       "properties": {
         "sku": {
           "name": "CapacityReservation",
@@ -334,7 +355,7 @@
       "name": "[parameters('AKSClusterName')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('Log_ANLT_workspace_Name'))]",
+        "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('Log_Analytics_workspace_Name'))]",
         "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VirtualNetworkName'), parameters('subnet1_name'))]"
       ],
       "properties": {
@@ -364,7 +385,7 @@
           "omsagent": {
             "enabled": "[parameters('enableOmsAgent')]",
             "config": {
-              "logAnalyticsWorkspaceResourceID": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('Log_ANLT_workspace_Name'))]"
+              "logAnalyticsWorkspaceResourceID": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('Log_Analytics_workspace_Name'))]"
             }
           }
         },
