@@ -2,31 +2,28 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "EVTHUBname": {
-      "value": "TBSEVNTHUB"
+    "EventHubName": {
+      "value": "SIEVNTHUB"
     },
-    "EVTHUBskuName": {
+    "EventHubSku": {
       "value": "Standard"
     },
-    "EVTHUBskuTier": {
-      "value": "Standard"
-    },
-    "EVTHUBskuCapacity": {
+    "EventHubSkuCapacity": {
       "value": "1"
     },
-    "EVTHUBisAutoInflateEnabled": {
+    "EventHubIsautoInflateEnabled": {
       "value": "false"
     },
-    "EVTHUBmaximumThroughputUnits": {
+    "EventHubMaximumThroughputUnits": {
       "value": "0"
     },
-    "EVTHUBzoneRedundant": {
+    "EventHubZoneRedundant": {
       "value": false
     },
-    "NSGname": {
+    "NSGName": {
       "value": "InboundNSGRULE"
     },
-    "virtualNetworkName": {
+    "VirtualNetworkName": {
       "value": "TBSENTVnet"
     },
     "vnetAddressPrefix": {
@@ -55,17 +52,17 @@
     "bastionEnabled": {
       "value": false
     },
-    "Log_ANLT_workspace_Name": {
-      "value": "TBSSIENTLogAltWS180102"
+    "Log_Analytics_workspace_Name": {
+      "value": "SIENTLogAltWS180"
     },
-    "Log_ANLT_workspace_Location": {
+    "Log_Analytics_workspace_location": {
       "value": "southeastasia"
     },
-    "Log_ANLT_Pricing_tier": {
+    "Log_Analytics_Pricing_tier": {
       "value": "Free"
     },
-    "AKSClusterName": {
-      "value": "TBSSIAKSClusterK1801"
+    "AksClusterName": {
+      "value": "TBSSIAksClusterK1801"
     },
     "kubernetesVersion": {
       "value": "1.15.7"
@@ -76,16 +73,16 @@
     "servicePrincipalClientSecret": {
       "value": "VK1AA:9ehIl/46A=jOLxZVI[Vm-3Lqzl"
     },
-    "AKSagentCount": {
+    "AksAgentCount": {
       "value": 2
     },
-    "AKSagentVMSize": {
+    "AksAgentVMSize": {
       "value": "Standard_F8s"
     },
-    "AKSosDiskSizeGB": {
+    "AksOsDiskSizeGB": {
       "value": 100
     },
-    "AKSosType": {
+    "AksOsType": {
       "value": "Linux"
     },
     "maxPods": {
@@ -112,7 +109,7 @@
     "dockerBridgeCidr": {
       "value": "172.17.0.1/16"
     },
-    "AKSnodeResourceGroupPrefix": {
+    "AksNodeResourceGroupPrefix": {
       "value": "MC_TBS-RG-SI-Entrp_"
     }
   }
