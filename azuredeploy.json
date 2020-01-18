@@ -15,8 +15,8 @@
       "defaultValue": "1"
     },
     "EventHubIsautoinflateEnabled": {
-      "type": "string",
-      "defaultValue": "false",
+      "type": "bool",
+      "defaultValue": false,
       "allowedValues": [
         true,
         false
