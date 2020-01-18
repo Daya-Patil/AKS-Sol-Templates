@@ -1,0 +1,119 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "EVTHUBname": {
+      "value": "TBSEVNTHUB"
+    },
+    "EVTHUBskuName": {
+      "value": "Standard"
+    },
+    "EVTHUBskuTier": {
+      "value": "Standard"
+    },
+    "EVTHUBskuCapacity": {
+      "value": "1"
+    },
+    "EVTHUBisAutoInflateEnabled": {
+      "value": "false"
+    },
+    "EVTHUBmaximumThroughputUnits": {
+      "value": "0"
+    },
+    "EVTHUBzoneRedundant": {
+      "value": false
+    },
+    "NSGname": {
+      "value": "InboundNSGRULE"
+    },
+    "virtualNetworkName": {
+      "value": "TBSENTVnet"
+    },
+    "vnetAddressPrefix": {
+      "value": [
+        "192.168.16.0/23"
+      ]
+    },
+    "ipv6Enabled": {
+      "value": false
+    },
+    "subnetCount": {
+      "value": 1
+    },
+    "subnet1_name": {
+      "value": "TBSSubnet"
+    },
+    "subnet1_addressRange": {
+      "value": "192.168.16.0/23"
+    },
+    "ddosProtectionPlanEnabled": {
+      "value": false
+    },
+    "firewallEnabled": {
+      "value": false
+    },
+    "bastionEnabled": {
+      "value": false
+    },
+    "Log_ANLT_workspace_Name": {
+      "value": "TBSSIENTLogAltWS180102"
+    },
+    "Log_ANLT_workspace_Location": {
+      "value": "southeastasia"
+    },
+    "Log_ANLT_Pricing_tier": {
+      "value": "Free"
+    },
+    "AKSClusterName": {
+      "value": "TBSSIAKSClusterK1801"
+    },
+    "kubernetesVersion": {
+      "value": "1.15.7"
+    },
+    "servicePrincipalClientId": {
+      "value": "ae544a28-b75c-4adb-88e0-a860c59508d1"
+    },
+    "servicePrincipalClientSecret": {
+      "value": "VK1AA:9ehIl/46A=jOLxZVI[Vm-3Lqzl"
+    },
+    "AKSagentCount": {
+      "value": 2
+    },
+    "AKSagentVMSize": {
+      "value": "Standard_F8s"
+    },
+    "AKSosDiskSizeGB": {
+      "value": 100
+    },
+    "AKSosType": {
+      "value": "Linux"
+    },
+    "maxPods": {
+      "value": 30
+    },
+    "enableOmsAgent": {
+      "value": true
+    },
+    "enableHttpApplicationRouting": {
+      "value": true
+    },
+    "enableRBAC": {
+      "value": true
+    },
+    "networkPlugin": {
+      "value": "azure"
+    },
+    "serviceCidr": {
+      "value": "10.0.0.0/16"
+    },
+    "dnsServiceIP": {
+      "value": "10.0.0.10"
+    },
+    "dockerBridgeCidr": {
+      "value": "172.17.0.1/16"
+    },
+    "AKSnodeResourceGroupPrefix": {
+      "value": "MC_TBS-RG-SI-Entrp_"
+    }
+  }
+  }
