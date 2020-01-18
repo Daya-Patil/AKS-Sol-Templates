@@ -40,7 +40,11 @@
     },
     "ipv6Enabled": {
       "type": "bool",
-      "defaultValue": false
+      "defaultValue": false,
+      "allowedValues": [
+        true,
+        false
+      ]
     },
     "subnetCount": {
       "type": "int",
@@ -56,15 +60,27 @@
     },
     "ddosProtectionPlanEnabled": {
       "type": "bool",
-      "defaultValue": false
+      "defaultValue": false,
+      "allowedValues": [
+        true,
+        false
+      ]
     },
     "FirewallEnabled": {
       "type": "bool",
-      "defaultValue": false
+      "defaultValue": false,
+      "allowedValues": [
+        true,
+        false
+      ]
     },
     "bastionEnabled": {
       "type": "bool",
-      "defaultValue": false
+      "defaultValue": false,
+      "allowedValues": [
+        true,
+        false
+      ]
     },
     "Log_Analytics_workspace_Name": {
       "type": "string"
@@ -181,6 +197,10 @@
     "enableOmsAgent": {
       "defaultValue": true,
       "type": "bool",
+      "allowedValues": [
+        true,
+        false
+      ],
       "metadata": {
         "description": "boolean flag to turn on and off of omsagent addon"
       }
@@ -188,6 +208,10 @@
     "enableHttpApplicationRouting": {
       "defaultValue": true,
       "type": "bool",
+      "allowedValues": [
+        true,
+        false
+      ],
       "metadata": {
         "description": "boolean flag to turn on and off of http application routing"
       }
@@ -195,6 +219,10 @@
     "enableRBAC": {
       "defaultValue": true,
       "type": "bool",
+      "allowedValues": [
+        true,
+        false
+      ],
       "metadata": {
         "description": "Flag to turn on/off RBAC"
       }
