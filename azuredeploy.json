@@ -5,26 +5,9 @@
     "EventHubName": {
       "type": "string"
     },
-    "NSGName": {
-      "type": "string"
-    },
-    "VirtualNetworkName": {
-      "type": "string",
-      "defaultValue": "TBSENTVnet"
-    },
     "VnetAddressPrefix": {
-      "type": "array",
-      "defaultValue": [
-        "192.168.16.0/23"
-      ]
-    },
-    "subnet1_name": {
       "type": "string",
-      "defaultValue": "TBSSubnet"
-    },
-    "subnet1_addressRange": {
-      "type": "string",
-      "defaultValue": "192.168.16.0/23"
+      "defaultValue":  "192.168.16.0/23" 
     },
     "Log_Analytics_workspace_Name": {
       "type": "string"
@@ -59,9 +42,6 @@
         "westus2"
       ]
     },
-    "AksClusterName": {
-      "type": "string"
-    },
     "servicePrincipalClientId": {
       "type": "securestring",
       "metadata": {
@@ -72,34 +52,6 @@
       "type": "securestring",
       "metadata": {
         "description": "The Service Principal Client Secret."
-      }
-    },
-    "serviceCidr": {
-      "type": "string",
-      "defaultValue": "10.0.0.0/16",
-      "metadata": {
-        "description": "A CIDR notation IP range from which to assign service cluster IPs."
-      }
-    },
-    "dnsServiceIP": {
-      "type": "string",
-      "defaultValue": "10.0.0.10",
-      "metadata": {
-        "description": "Containers DNS server IP address."
-      }
-    },
-    "dockerBridgeCidr": {
-      "type": "string",
-      "defaultValue": "172.17.0.1/16",
-      "metadata": {
-        "description": "A CIDR notation IP for Docker bridge."
-      }
-    },
-    "AksNodeResourceGroupPrefix": {
-      "type": "string",
-      "defaultValue": "MC_TBS-RG-SI-Entrp_",
-      "metadata": {
-        "description": "Prefex for nodeResourceGroup of AKS cluster."
       }
     }
   },
@@ -125,7 +77,7 @@
     {
       "type": "Microsoft.Network/networkSecurityGroups",
       "apiVersion": "2019-09-01",
-      "name": "[parameters('NSGName')]",
+      "name": "[concat(resourceGroup().name, '-NSG')]",
       "location": "[resourceGroup().location]",
       "properties": {
         "securityRules": []
@@ -162,16 +114,18 @@
       }
     },
     {
-      "name": "[parameters('VirtualNetworkName')]",
+      "name": "[concat(resourceGroup().name, '-Vnet')]",
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2019-04-01",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('NSGName'))]"
+        "[resourceId('Microsoft.Network/networkSecurityGroups', concat(resourceGroup().name, '-NSG'))]"
       ],
       "properties": {
         "addressSpace": {
-          "addressPrefixes": "[parameters('vnetAddressPrefix')]"
+          "addressPrefixes": [
+            "[parameters('vnetAddressPrefix')]"
+          ]
         },
         "virtualNetworkPeerings": [],
         "enableDdosProtection": false,
@@ -181,15 +135,15 @@
     {
       "type": "Microsoft.Network/virtualNetworks/subnets",
       "apiVersion": "2019-09-01",
-      "name": "[concat(parameters('VirtualNetworkName'), '/', parameters('subnet1_name'))]",
+      "name": "[concat(resourceGroup().name,'-vnet/subnet1')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Network/virtualNetworks', parameters('VirtualNetworkName'))]",
-        "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('NSGName'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks', concat(resourceGroup().name, '-Vnet'))]",
+        "[resourceId('Microsoft.Network/networkSecurityGroups', concat(resourceGroup().name, '-NSG'))]"
       ],
       "properties": {
-        "addressPrefix": "[parameters('subnet1_addressRange')]",
+        "addressPrefix": "[parameters('vnetAddressPrefix')]", 
         "networkSecurityGroup": {
-          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('NSGName'))]"
+          "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(resourceGroup().name, '-NSG'))]"
         },
         "delegations": [],
         "privateEndpointNetworkPolicies": "Enabled",
@@ -217,22 +171,22 @@
     {
       "type": "Microsoft.ContainerService/managedClusters",
       "apiVersion": "2019-10-01",
-      "name": "[parameters('AKSClusterName')]",
+      "name": "[concat(resourceGroup().name, '-AKSCluster')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('Log_Analytics_workspace_Name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VirtualNetworkName'), parameters('subnet1_name'))]"
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(resourceGroup().name, '-Vnet'), 'subnet1')]"
       ],
       "properties": {
         "kubernetesVersion": "1.15.7",
-        "dnsPrefix": "[concat(parameters('AKSClusterName'), '-dns')]",
+        "dnsPrefix": "[concat(resourceGroup().name, '-AKSClusterdns')]",
         "agentPoolProfiles": [
           {
             "name": "agentpool",
             "count": 2,
             "vmSize": "Standard_F8s",
             "osDiskSizeGB": 100,
-            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VirtualNetworkName'), parameters('subnet1_name'))]",
+            "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(resourceGroup().name, '-Vnet'), 'subnet1')]",
             "maxPods": 30,
             "type": "VirtualMachineScaleSets",
             "orchestratorVersion": "1.15.7",
@@ -254,7 +208,7 @@
             }
           }
         },
-        "nodeResourceGroup": "[concat(parameters('AKSnodeResourceGroupPrefix'), parameters('AKSClusterName'), '_', resourceGroup().location )]",
+        "nodeResourceGroup": "[concat('MC_TBS-RG-SI-Entrp_', concat(resourceGroup().name, '-AKSCluster'), '_', resourceGroup().location )]",
         "enableRBAC": true,
         "networkProfile": {
           "networkPlugin": "azure",
@@ -265,9 +219,9 @@
             }
 
           },
-          "serviceCidr": "[parameters('serviceCidr')]",
-          "dnsServiceIP": "[parameters('dnsServiceIP')]",
-          "dockerBridgeCidr": "[parameters('dockerBridgeCidr')]",
+          "serviceCidr": "10.0.0.0/16",
+          "dnsServiceIP": "10.0.0.10",
+          "dockerBridgeCidr": "172.17.0.1/16",
           "outboundType": "loadBalancer"
         }
       }
@@ -275,16 +229,16 @@
     {
       "type": "Microsoft.ContainerService/managedClusters/agentPools",
       "apiVersion": "2019-10-01",
-      "name": "[concat(parameters('AKSClusterName'), '/agentpool')]",
+      "name": "[concat(resourceGroup().name, '-AKSCluster/agentpool')]",
       "dependsOn": [
-        "[resourceId('Microsoft.ContainerService/managedClusters', parameters('AKSClusterName'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VirtualNetworkName'), parameters('subnet1_name'))]"
+        "[resourceId('Microsoft.ContainerService/managedClusters', concat(resourceGroup().name, '-AKSCluster'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(resourceGroup().name, '-Vnet'), 'subnet1')]"
       ],
       "properties": {
         "count": 2,
         "vmSize": "Standard_F8s",
         "osDiskSizeGB": 100,
-        "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VirtualNetworkName'), parameters('subnet1_name'))]",
+        "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(resourceGroup().name, '-Vnet'), 'subnet1')]",
         "maxPods": 30,
         "type": "VirtualMachineScaleSets",
         "orchestratorVersion": "1.15.7",

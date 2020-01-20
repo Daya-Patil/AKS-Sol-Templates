@@ -3,51 +3,22 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "EventHubName": {
-      "value": "SIEVNTHUB2020"
-    },
-    "NSGName": {
-      "value": "InboundNSGRULE"
-    },
-    "VirtualNetworkName": {
-      "value": "TBSENTVnet"
+      "value": "SIEVNTHUB2020MMnopoq"
     },
     "vnetAddressPrefix": {
-      "value": [
-        "192.168.16.0/23"
-      ]
-    },
-    "subnet1_name": {
-      "value": "TBSSubnet"
-    },
-    "subnet1_addressRange": {
-      "value": "192.168.16.0/23"
+      "value": "192.168.16.0/23" 
     },
     "Log_Analytics_workspace_Name": {
-      "value": "SIENTLogAltWS18030"
+      "value": "SIENTLogAltWS18030MMnopoq"
     },
     "Log_Analytics_workspace_location": {
       "value": "southeastasia"
-    },
-    "AksClusterName": {
-      "value": "TBSSIAksClusterK1801"
     },
     "servicePrincipalClientId": {
       "value": "ae544a28-b75c-4adb-88e0-a860c59508d1"
     },
     "servicePrincipalClientSecret": {
       "value": "VK1AA:9ehIl/46A=jOLxZVI[Vm-3Lqzl"
-    },
-    "serviceCidr": {
-      "value": "10.0.0.0/16"
-    },
-    "dnsServiceIP": {
-      "value": "10.0.0.10"
-    },
-    "dockerBridgeCidr": {
-      "value": "172.17.0.1/16"
-    },
-    "AksNodeResourceGroupPrefix": {
-      "value": "MC_TBS-RG-SI-Entrp_"
     }
   }
-  }
+}
