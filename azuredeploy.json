@@ -5,35 +5,6 @@
     "EventHubName": {
       "type": "string"
     },
-    "EventHubSku": {
-      "type": "string",
-      "defaultValue": "Standard",
-      "allowedValues": [ "Basic", "Standard" ]
-    },
-    "EventHubSkuCapacity": {
-      "type": "string",
-      "defaultValue": "1"
-    },
-    "EventHubIsautoinflateEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "allowedValues": [
-        true,
-        false
-      ]
-    },
-    "EventHubMaximumThroughputUnits": {
-      "type": "string",
-      "defaultValue": "0"
-    },
-    "EventHubZoneRedundant": {
-      "type": "bool",
-      "defaultValue": false,
-      "allowedValues": [
-        true,
-        false
-      ]
-    },
     "NSGName": {
       "type": "string"
     },
@@ -47,18 +18,6 @@
         "192.168.16.0/23"
       ]
     },
-    "ipv6Enabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "allowedValues": [
-        true,
-        false
-      ]
-    },
-    "subnetCount": {
-      "type": "int",
-      "defaultValue": 1
-    },
     "subnet1_name": {
       "type": "string",
       "defaultValue": "TBSSubnet"
@@ -66,30 +25,6 @@
     "subnet1_addressRange": {
       "type": "string",
       "defaultValue": "192.168.16.0/23"
-    },
-    "ddosProtectionPlanEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "allowedValues": [
-        true,
-        false
-      ]
-    },
-    "FirewallEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "allowedValues": [
-        true,
-        false
-      ]
-    },
-    "bastionEnabled": {
-      "type": "bool",
-      "defaultValue": false,
-      "allowedValues": [
-        true,
-        false
-      ]
     },
     "Log_Analytics_workspace_Name": {
       "type": "string"
@@ -124,30 +59,8 @@
         "westus2"
       ]
     },
-    "Log_Analytics_Pricing_tier": {
-      "type": "string",
-      "allowedValues": [
-        "pergb2018",
-        "Free",
-        "Standalone",
-        "PerNode",
-        "Standard",
-        "Premium"
-      ],
-      "defaultValue": "Free",
-      "metadata": {
-        "description": "Pricing tier: PerGB2018 or legacy tiers (Free, Standalone, PerNode, Standard or Premium) which are not available to all customers."
-      }
-    },
     "AksClusterName": {
       "type": "string"
-    },
-    "kubernetesVersion": {
-      "defaultValue": "1.15.7",
-      "type": "string",
-      "metadata": {
-        "description": "The version of Kubernetes."
-      }
     },
     "servicePrincipalClientId": {
       "type": "securestring",
@@ -159,92 +72,6 @@
       "type": "securestring",
       "metadata": {
         "description": "The Service Principal Client Secret."
-      }
-    },
-    "AksAgentCount": {
-      "defaultValue": 1,
-      "minValue": 1,
-      "maxValue": 50,
-      "type": "int",
-      "metadata": {
-        "description": "The number of agent nodes for the cluster."
-      }
-    },
-    "AksAgentVMSize": {
-      "defaultValue": "Standard_D1_v2",
-      "type": "string",
-      "metadata": {
-        "description": "The size of the Virtual Machine."
-      }
-    },
-    "AksOsDiskSizeGB": {
-      "defaultValue": 100,
-      "minValue": 0,
-      "maxValue": 1023,
-      "type": "int",
-      "metadata": {
-        "description": "Disk size (in GB) to provision for each of the agent pool nodes. This value ranges from 0 to 1023. Specifying 0 will apply the default disk size for that agentVMSize."
-      }
-    },
-    "AksOsType": {
-      "defaultValue": "Linux",
-      "allowedValues": [
-        "Linux"
-      ],
-      "type": "string",
-      "metadata": {
-        "description": "The type of operating system."
-      }
-    },
-    "maxPods": {
-      "defaultValue": 30,
-      "type": "int",
-      "metadata": {
-        "description": "Maximum number of pods that can run on a node."
-      }
-    },
-    "enableOmsAgent": {
-      "defaultValue": true,
-      "type": "bool",
-      "allowedValues": [
-        true,
-        false
-      ],
-      "metadata": {
-        "description": "boolean flag to turn on and off of omsagent addon"
-      }
-    },
-    "enableHttpApplicationRouting": {
-      "defaultValue": true,
-      "type": "bool",
-      "allowedValues": [
-        true,
-        false
-      ],
-      "metadata": {
-        "description": "boolean flag to turn on and off of http application routing"
-      }
-    },
-    "enableRBAC": {
-      "defaultValue": true,
-      "type": "bool",
-      "allowedValues": [
-        true,
-        false
-      ],
-      "metadata": {
-        "description": "Flag to turn on/off RBAC"
-      }
-    },
-    "networkPlugin": {
-      "defaultValue": "azure",
-      "allowedValues": [
-        "azure",
-        "kubenet"
-      ],
-      "type": "string",
-      "metadata": {
-        "description": "Network plugin used for building Kubernetes network."
       }
     },
     "serviceCidr": {
@@ -284,14 +111,15 @@
       "name": "[parameters('EventHubName')]",
       "location": "[resourceGroup().location]",
       "sku": {
-        "name": "[parameters('EventHubSku')]",
-        "tier": "[parameters('EventHubSku')]",
-        "capacity": "[parameters('EventHubSkuCapacity')]"
+        "name": "Standard",
+        "tier": "Standard",
+        "capacity": 1
       },
       "properties": {
-        "isAutoInflateEnabled": "[parameters('EventHubIsautoInflateEnabled')]",
-        "maximumThroughputUnits": "[parameters('EventHubMaximumThroughputUnits')]",
-        "zoneRedundant": "[parameters('EventHubZoneRedundant')]"
+        "zoneRedundant": false,
+        "isAutoInflateEnabled": false,
+        "maximumThroughputUnits": 0,
+        "kafkaEnabled": true
       }
     },
     {
@@ -346,7 +174,7 @@
           "addressPrefixes": "[parameters('vnetAddressPrefix')]"
         },
         "virtualNetworkPeerings": [],
-        "enableDdosProtection": "[parameters('ddosProtectionPlanEnabled')]",
+        "enableDdosProtection": false,
         "enableVmProtection": false
       }
     },
@@ -396,19 +224,19 @@
         "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VirtualNetworkName'), parameters('subnet1_name'))]"
       ],
       "properties": {
-        "kubernetesVersion": "[parameters('kubernetesVersion')]",
+        "kubernetesVersion": "1.15.7",
         "dnsPrefix": "[concat(parameters('AKSClusterName'), '-dns')]",
         "agentPoolProfiles": [
           {
             "name": "agentpool",
-            "count": "[parameters('AKSagentCount')]",
-            "vmSize": "[parameters('AKSagentVMSize')]",
-            "osDiskSizeGB": "[parameters('AKSosDiskSizeGB')]",
+            "count": 2,
+            "vmSize": "Standard_F8s",
+            "osDiskSizeGB": 100,
             "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VirtualNetworkName'), parameters('subnet1_name'))]",
-            "maxPods": "[parameters('maxPods')]",
+            "maxPods": 30,
             "type": "VirtualMachineScaleSets",
-            "orchestratorVersion": "[parameters('kubernetesVersion')]",
-            "osType": "[parameters('AKSosType')]"
+            "orchestratorVersion": "1.15.7",
+            "osType": "Linux"
           }
         ],
         "servicePrincipalProfile": {
@@ -417,19 +245,19 @@
         },
         "addonProfiles": {
           "httpApplicationRouting": {
-            "enabled": "[parameters('enableHttpApplicationRouting')]"
+            "enabled": true
           },
           "omsagent": {
-            "enabled": "[parameters('enableOmsAgent')]",
+            "enabled": true,
             "config": {
               "logAnalyticsWorkspaceResourceID": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('Log_Analytics_workspace_Name'))]"
             }
           }
         },
         "nodeResourceGroup": "[concat(parameters('AKSnodeResourceGroupPrefix'), parameters('AKSClusterName'), '_', resourceGroup().location )]",
-        "enableRBAC": "[parameters('enableRBAC')]",
+        "enableRBAC": true,
         "networkProfile": {
-          "networkPlugin": "[parameters('networkPlugin')]",
+          "networkPlugin": "azure",
           "loadBalancerSku": "standard",
           "loadBalancerProfile": {
             "managedOutboundIPs": {
@@ -453,14 +281,14 @@
         "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VirtualNetworkName'), parameters('subnet1_name'))]"
       ],
       "properties": {
-        "count": "[parameters('AKSagentCount')]",
-        "vmSize": "[parameters('AKSagentVMSize')]",
-        "osDiskSizeGB": "[parameters('AKSosDiskSizeGB')]",
+        "count": 2,
+        "vmSize": "Standard_F8s",
+        "osDiskSizeGB": 100,
         "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('VirtualNetworkName'), parameters('subnet1_name'))]",
-        "maxPods": "[parameters('maxPods')]",
+        "maxPods": 30,
         "type": "VirtualMachineScaleSets",
-        "orchestratorVersion": "[parameters('kubernetesVersion')]",
-        "osType": "[parameters('AKSosType')]"
+        "orchestratorVersion": "1.15.7",
+        "osType": "Linux"
       }
     }
   ]
