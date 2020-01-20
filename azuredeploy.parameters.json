@@ -3,22 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "EventHubName": {
-      "value": "SIEVNTHUB"
-    },
-    "EventHubSku": {
-      "value": "Standard"
-    },
-    "EventHubSkuCapacity": {
-      "value": "1"
-    },
-    "EventHubIsautoInflateEnabled": {
-      "value": "false"
-    },
-    "EventHubMaximumThroughputUnits": {
-      "value": "0"
-    },
-    "EventHubZoneRedundant": {
-      "value": false
+      "value": "SIEVNTHUB2020"
     },
     "NSGName": {
       "value": "InboundNSGRULE"
@@ -31,74 +16,26 @@
         "192.168.16.0/23"
       ]
     },
-    "ipv6Enabled": {
-      "value": false
-    },
-    "subnetCount": {
-      "value": 1
-    },
     "subnet1_name": {
       "value": "TBSSubnet"
     },
     "subnet1_addressRange": {
       "value": "192.168.16.0/23"
     },
-    "ddosProtectionPlanEnabled": {
-      "value": false
-    },
-    "firewallEnabled": {
-      "value": false
-    },
-    "bastionEnabled": {
-      "value": false
-    },
     "Log_Analytics_workspace_Name": {
-      "value": "SIENTLogAltWS180"
+      "value": "SIENTLogAltWS18030"
     },
     "Log_Analytics_workspace_location": {
       "value": "southeastasia"
     },
-    "Log_Analytics_Pricing_tier": {
-      "value": "Free"
-    },
     "AksClusterName": {
       "value": "TBSSIAksClusterK1801"
-    },
-    "kubernetesVersion": {
-      "value": "1.15.7"
     },
     "servicePrincipalClientId": {
       "value": "ae544a28-b75c-4adb-88e0-a860c59508d1"
     },
     "servicePrincipalClientSecret": {
       "value": "VK1AA:9ehIl/46A=jOLxZVI[Vm-3Lqzl"
-    },
-    "AksAgentCount": {
-      "value": 2
-    },
-    "AksAgentVMSize": {
-      "value": "Standard_F8s"
-    },
-    "AksOsDiskSizeGB": {
-      "value": 100
-    },
-    "AksOsType": {
-      "value": "Linux"
-    },
-    "maxPods": {
-      "value": 30
-    },
-    "enableOmsAgent": {
-      "value": true
-    },
-    "enableHttpApplicationRouting": {
-      "value": true
-    },
-    "enableRBAC": {
-      "value": true
-    },
-    "networkPlugin": {
-      "value": "azure"
     },
     "serviceCidr": {
       "value": "10.0.0.0/16"
