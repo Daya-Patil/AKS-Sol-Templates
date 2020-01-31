@@ -1,13 +1,11 @@
 {
+  //Tanla Deployment without Redis Cache
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "CUAID": {
       "type": "string",
       "defaultValue": "00000000-0000-0000-0000-000000000000"
-    },
-    "EventHubName": {
-      "type": "string"
     },
     "EnterpriseNo": {
       "type": "string",
@@ -67,12 +65,14 @@
       }
     }
   },
-  "variables": {},
+  "variables": {
+    "SeperatedValues": "[split(resourceGroup().name,'RG')]"
+  },
   "resources": [
     {
       "type": "Microsoft.EventHub/namespaces",
       "apiVersion": "2018-01-01-preview",
-      "name": "[concat(parameters('EventHubName'), '-aggregator-', parameters('EnterpriseNo'))]",
+      "name": "[concat(variables('SeperatedValues')[0], 'EH-agg-', parameters('EnterpriseNo'))]",
       "location": "[resourceGroup().location]",
       "sku": {
         "name": "Standard",
@@ -98,10 +98,10 @@
     {
       "type": "Microsoft.EventHub/namespaces/AuthorizationRules",
       "apiVersion": "2017-04-01",
-      "name": "[concat(parameters('EventHubName'), '-aggregator-', parameters('EnterpriseNo'), '/RootManageSharedAccessKey')]",
+      "name": "[concat(variables('SeperatedValues')[0], 'EH-agg-', parameters('EnterpriseNo'), '/RootManageSharedAccessKey')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.EventHub/namespaces', concat(parameters('EventHubName'), '-aggregator-', parameters('EnterpriseNo')))]"
+        "[resourceId('Microsoft.EventHub/namespaces', concat(variables('SeperatedValues')[0], 'EH-agg-', parameters('EnterpriseNo')))]"
       ],
       "properties": {
         "rights": [
@@ -114,10 +114,10 @@
     {
       "type": "Microsoft.EventHub/namespaces/networkRuleSets",
       "apiVersion": "2018-01-01-preview",
-      "name": "[concat(parameters('EventHubName'), '-aggregator-', parameters('EnterpriseNo'), '/default')]",
+      "name": "[concat(variables('SeperatedValues')[0], 'EH-agg-', parameters('EnterpriseNo'), '/default')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.EventHub/namespaces', concat(parameters('EventHubName'), '-aggregator-', parameters('EnterpriseNo')))]"
+        "[resourceId('Microsoft.EventHub/namespaces', concat(variables('SeperatedValues')[0], 'EH-agg-', parameters('EnterpriseNo')))]"
       ],
       "properties": {
         "defaultAction": "Deny",
@@ -153,7 +153,7 @@
         "[resourceId('Microsoft.Network/networkSecurityGroups', concat(resourceGroup().name, '-NSG'))]"
       ],
       "properties": {
-        "addressPrefix": "[parameters('vnetAddressPrefix')]", 
+        "addressPrefix": "[parameters('vnetAddressPrefix')]",
         "networkSecurityGroup": {
           "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(resourceGroup().name, '-NSG'))]"
         },
@@ -183,7 +183,7 @@
     {
       "type": "Microsoft.ContainerService/managedClusters",
       "apiVersion": "2019-10-01",
-      "name": "[concat(resourceGroup().name, '-AKSCluster')]",
+      "name": "[replace(resourceGroup().name,'RG-', '')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
         "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('Log_Analytics_workspace_Name'))]",
@@ -196,7 +196,7 @@
           {
             "name": "agentpool",
             "count": 2,
-            "vmSize": "Standard_F8s",
+            "vmSize": "Standard_DS4_v2",
             "osDiskSizeGB": 100,
             "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(resourceGroup().name, '-Vnet'), 'subnet1')]",
             "maxPods": 30,
@@ -220,7 +220,7 @@
             }
           }
         },
-        "nodeResourceGroup": "[concat('MC_TBS-RG-SI-Entrp_', concat(resourceGroup().name, '-AKSCluster'), '_', resourceGroup().location )]",
+        "nodeResourceGroup": "[concat('MC_TBS-RG-SI-Entrp_', replace(resourceGroup().name,'RG-', ''), '_', resourceGroup().location )]",
         "enableRBAC": true,
         "networkProfile": {
           "networkPlugin": "azure",
@@ -241,14 +241,14 @@
     {
       "type": "Microsoft.ContainerService/managedClusters/agentPools",
       "apiVersion": "2019-10-01",
-      "name": "[concat(resourceGroup().name, '-AKSCluster/agentpool')]",
+      "name": "[concat(replace(resourceGroup().name,'RG-', ''), '/agentpool')]",
       "dependsOn": [
-        "[resourceId('Microsoft.ContainerService/managedClusters', concat(resourceGroup().name, '-AKSCluster'))]",
+        "[resourceId('Microsoft.ContainerService/managedClusters', replace(resourceGroup().name,'RG-', ''))]",
         "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(resourceGroup().name, '-Vnet'), 'subnet1')]"
       ],
       "properties": {
         "count": 2,
-        "vmSize": "Standard_F8s",
+        "vmSize": "Standard_DS4_v2",
         "osDiskSizeGB": 100,
         "vnetSubnetID": "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(resourceGroup().name, '-Vnet'), 'subnet1')]",
         "maxPods": 30,
@@ -258,5 +258,5 @@
       }
     }
   ]
-  
+
 }
