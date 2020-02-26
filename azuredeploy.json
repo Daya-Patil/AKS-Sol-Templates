@@ -1,5 +1,5 @@
 {
-  //Tanla Deployment without Redis Cache
+  //ENT Deployment without Redis Cache
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
@@ -92,7 +92,22 @@
       "name": "[concat(resourceGroup().name, '-NSG')]",
       "location": "[resourceGroup().location]",
       "properties": {
-        "securityRules": []
+        "securityRules": [
+          {
+            "name": "web_rule",
+            "properties": {
+              "description": "Allow WEB",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "80",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 101,
+              "direction": "Inbound"
+            }
+          }
+        ]
       }
     },
     {
@@ -186,8 +201,8 @@
       "name": "[replace(resourceGroup().name,'RG-', '')]",
       "location": "[resourceGroup().location]",
       "dependsOn": [
-        "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('Log_Analytics_workspace_Name'))]",
-        "[resourceId('Microsoft.Network/virtualNetworks/subnets', concat(resourceGroup().name, '-Vnet'), 'subnet1')]"
+        "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('Log_Analytics_workspace_Name'))]"
+        
       ],
       "properties": {
         "kubernetesVersion": "1.15.7",
