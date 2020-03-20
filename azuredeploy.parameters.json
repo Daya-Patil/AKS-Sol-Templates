@@ -5,23 +5,14 @@
     //"CUAID": {
     // "value": "8fad6b47-2bc8-5140-8022-148d25942560"
     //},
-    "EnterpriseNo": {
-      "value": "32"
-    },
     "vnetAddressPrefix": {
-      "value": "192.168.16.0/22"
-    },
-    "Log_Analytics_workspace_Name": {
-      "value": "Perf-ENT-CI-LAWS-04"
-    },
-    "Log_Analytics_workspace_location": {
-      "value": "southeastasia"
+      "value": "192.167.16.0/22"
     },
     "servicePrincipalClientId": {
-      "value": "84583ef3-c27f-4b2d-88bb-f8e79a3a456d"
+      "value": "84583ef3-c27f-4b2d-88bb-f8e79a356d"
     },
     "servicePrincipalClientSecret": {
-      "value": "ER.]U.HEu:9W2yiNoAF5BxCHJ6SOAd6j"
+      "value": "ER.]U.HEu:9W2yiNoAF5Bx6SOAd6j"
     }
   }
 }
